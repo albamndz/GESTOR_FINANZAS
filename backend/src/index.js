@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const transaccionRoutes = require('./routes/transaccionRoutes');
 
 const app = express();
 
@@ -13,10 +14,11 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/transacciones', transaccionRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
-  res.send('Servidor funcionando correctamente');
+  res.send('Servidor funcionando correctamente ✅');
 });
 
 // Conexión a MongoDB y arranque del servidor
@@ -25,9 +27,9 @@ const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
   .then(() => {
-    console.log('Conectado a MongoDB');
+    console.log('Conectado a MongoDB ✅');
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en http://localhost:${PORT}`);
+      console.log(`Servidor corriendo en http://localhost:${PORT} ✅`);
     });
   })
   .catch((err) => {
