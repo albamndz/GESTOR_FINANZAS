@@ -1,115 +1,132 @@
-import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
+import { Pie, Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler
+} from 'chart.js';
 import api from '../services/api';
 
-const Dashboard = () => {
-  const { nombre, logout } = useAuth();
-  const [transacciones, setTransacciones] = useState([]);
-  const [presupuestos, setPresupuestos] = useState([]);
-  const [tipo, setTipo] = useState('gasto');
-  const [categoria, setCategoria] = useState('');
-  const [monto, setMonto] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
-  const cargarDatos = async () => {
-    const t = await api.get('/transacciones');
-    const p = await api.get('/presupuestos');
-    setTransacciones(t.data);
-    setPresupuestos(p.data);
-  };
+const Dashboard = () => {
+  const [transacciones, setTransacciones] = useState([]);
 
   useEffect(() => {
-    cargarDatos();
+    const cargar = async () => {
+      const res = await api.get('/transacciones');
+      setTransacciones(res.data);
+    };
+    cargar();
   }, []);
-
-  const handleCrearTransaccion = async (e) => {
-    e.preventDefault();
-    await api.post('/transacciones', { tipo, categoria, monto: parseFloat(monto), descripcion });
-    setCategoria('');
-    setMonto('');
-    setDescripcion('');
-    cargarDatos();
-  };
 
   const ingresos = transacciones.filter(t => t.tipo === 'ingreso').reduce((acc, t) => acc + t.monto, 0);
   const gastos = transacciones.filter(t => t.tipo === 'gasto').reduce((acc, t) => acc + t.monto, 0);
   const balance = ingresos - gastos;
 
+  // Datos para gráfico de tarta
+  const categorias = {};
+  transacciones.filter(t => t.tipo === 'gasto').forEach(t => {
+    categorias[t.categoria] = (categorias[t.categoria] || 0) + t.monto;
+  });
+
+  const pieData = {
+    labels: Object.keys(categorias),
+    datasets: [{
+      data: Object.values(categorias),
+      backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'],
+      borderWidth: 0
+    }]
+  };
+
+  // Datos para gráfico de línea
+  const ultimas = [...transacciones].slice(-7);
+  const lineData = {
+    labels: ultimas.map(t => new Date(t.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })),
+    datasets: [{
+      label: 'Movimientos',
+      data: ultimas.map(t => t.tipo === 'ingreso' ? t.monto : -t.monto),
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+      fill: true,
+      tension: 0.4
+    }]
+  };
+
   return (
-    <div style={{ maxWidth: '900px', margin: '20px auto', padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Hola, {nombre}</h1>
-        <button onClick={logout} style={{ padding: '8px 16px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Cerrar sesión
-        </button>
-      </div>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-800">Dashboard</h2>
 
-      {/* Resumen */}
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-        <div style={{ flex: 1, padding: '15px', backgroundColor: '#e8f5e9', borderRadius: '8px' }}>
-          <h3>Ingresos</h3>
-          <p style={{ fontSize: '24px', color: 'green' }}>{ingresos.toFixed(2)} €</p>
+      {/* Tarjetas resumen */}
+      <div className="grid grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow p-6">
+          <p className="text-sm text-gray-500 mb-1">Ingresos totales</p>
+          <p className="text-3xl font-bold text-emerald-600">{ingresos.toFixed(2)} €</p>
         </div>
-        <div style={{ flex: 1, padding: '15px', backgroundColor: '#ffebee', borderRadius: '8px' }}>
-          <h3>Gastos</h3>
-          <p style={{ fontSize: '24px', color: 'red' }}>{gastos.toFixed(2)} €</p>
+        <div className="bg-white rounded-2xl shadow p-6">
+          <p className="text-sm text-gray-500 mb-1">Gastos totales</p>
+          <p className="text-3xl font-bold text-red-500">{gastos.toFixed(2)} €</p>
         </div>
-        <div style={{ flex: 1, padding: '15px', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
-          <h3>Balance</h3>
-          <p style={{ fontSize: '24px', color: balance >= 0 ? 'green' : 'red' }}>{balance.toFixed(2)} €</p>
+        <div className="bg-white rounded-2xl shadow p-6">
+          <p className="text-sm text-gray-500 mb-1">Balance</p>
+          <p className={`text-3xl font-bold ${balance >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+            {balance.toFixed(2)} €
+          </p>
         </div>
       </div>
 
-      {/* Formulario */}
-      <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', marginBottom: '20px' }}>
-        <h3>Añadir transacción</h3>
-        <form onSubmit={handleCrearTransaccion} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <select value={tipo} onChange={e => setTipo(e.target.value)} style={{ padding: '8px' }}>
-            <option value="gasto">Gasto</option>
-            <option value="ingreso">Ingreso</option>
-          </select>
-          <input placeholder="Categoría" value={categoria} onChange={e => setCategoria(e.target.value)} style={{ padding: '8px' }} required />
-          <input placeholder="Monto" type="number" value={monto} onChange={e => setMonto(e.target.value)} style={{ padding: '8px' }} required />
-          <input placeholder="Descripción" value={descripcion} onChange={e => setDescripcion(e.target.value)} style={{ padding: '8px' }} />
-          <button type="submit" style={{ padding: '8px 16px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-            Guardar
-          </button>
-        </form>
+      {/* Graficos */}
+      <div className="grid grid-cols-2 gap-6">
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-700 mb-4">Gastos por categoría</h3>
+          {Object.keys(categorias).length === 0 ? (
+            <p className="text-gray-400 text-center py-10">Sin datos aún</p>
+          ) : (
+            <Pie data={pieData} />
+          )}
+        </div>
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-700 mb-4">Evolución reciente</h3>
+          {transacciones.length === 0 ? (
+            <p className="text-gray-400 text-center py-10">Sin datos aún</p>
+          ) : (
+            <Line data={lineData} />
+          )}
+        </div>
       </div>
 
-      {/* Presupuestos */}
-      {presupuestos.length > 0 && (
-        <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px', marginBottom: '20px' }}>
-          <h3>Presupuestos</h3>
-          {presupuestos.map(p => (
-            <div key={p._id} style={{ marginBottom: '10px', padding: '10px', backgroundColor: p.alerta ? '#ffebee' : '#e8f5e9', borderRadius: '4px' }}>
-              <strong>{p.categoria}</strong> — Gastado: {p.gastoActual}€ / Límite: {p.limite}€
-              {p.alerta && <span style={{ color: 'red', marginLeft: '10px' }}>⚠ Límite superado</span>}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Historial */}
-      <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-        <h3>Historial de transacciones</h3>
-        {transacciones.length === 0 ? <p>No hay transacciones aún.</p> : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      {/* Ultimas transacciones */}
+      <div className="bg-white rounded-2xl shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">Últimas transacciones</h3>
+        {transacciones.length === 0 ? (
+          <p className="text-gray-400 text-center py-6">No hay transacciones aún</p>
+        ) : (
+          <table className="w-full text-sm">
             <thead>
-              <tr style={{ backgroundColor: '#f5f5f5' }}>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Tipo</th>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Categoría</th>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Monto</th>
-                <th style={{ padding: '8px', textAlign: 'left' }}>Descripción</th>
+              <tr className="bg-gray-50 text-gray-600">
+                <th className="px-4 py-3 text-left">Tipo</th>
+                <th className="px-4 py-3 text-left">Categoría</th>
+                <th className="px-4 py-3 text-left">Monto</th>
+                <th className="px-4 py-3 text-left">Descripción</th>
               </tr>
             </thead>
             <tbody>
-              {transacciones.map(t => (
-                <tr key={t._id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '8px', color: t.tipo === 'ingreso' ? 'green' : 'red' }}>{t.tipo}</td>
-                  <td style={{ padding: '8px' }}>{t.categoria}</td>
-                  <td style={{ padding: '8px' }}>{t.monto} €</td>
-                  <td style={{ padding: '8px' }}>{t.descripcion}</td>
+              {[...transacciones].reverse().slice(0, 5).map(t => (
+                <tr key={t._id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${t.tipo === 'ingreso' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {t.tipo}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-700">{t.categoria}</td>
+                  <td className="px-4 py-3 font-semibold text-gray-800">{t.monto} €</td>
+                  <td className="px-4 py-3 text-gray-500">{t.descripcion || '—'}</td>
                 </tr>
               ))}
             </tbody>
