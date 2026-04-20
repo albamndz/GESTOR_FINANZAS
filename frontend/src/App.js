@@ -3,16 +3,30 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
 import Dashboard from './pages/Dashboard';
+import Transacciones from './pages/Transacciones';
+import Presupuestos from './pages/Presupuestos';
+import Sidebar from './components/Sidebar';
 
 const AppContent = () => {
   const { token } = useAuth();
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
+  const [paginaActual, setPaginaActual] = useState('dashboard');
 
-  if (token) return <Dashboard />;
+  if (!token) {
+    if (mostrarRegistro) return <Registro onSwitch={() => setMostrarRegistro(false)} />;
+    return <Login onSwitch={() => setMostrarRegistro(true)} />;
+  }
 
-  if (mostrarRegistro) return <Registro onSwitch={() => setMostrarRegistro(false)} />;
-
-  return <Login onSwitch={() => setMostrarRegistro(true)} />;
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      <Sidebar paginaActual={paginaActual} setPaginaActual={setPaginaActual} />
+      <div className="flex-1 p-8 overflow-auto">
+        {paginaActual === 'dashboard' && <Dashboard />}
+        {paginaActual === 'transacciones' && <Transacciones />}
+        {paginaActual === 'presupuestos' && <Presupuestos />}
+      </div>
+    </div>
+  );
 };
 
 const App = () => {
