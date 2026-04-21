@@ -18,9 +18,9 @@ const AppContent = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-lavender-50">
       <Sidebar paginaActual={paginaActual} setPaginaActual={setPaginaActual} />
-      <div className="flex-1 p-8 overflow-auto bg-gray-950">
+      <div className="flex-1 p-8 overflow-auto">
         {paginaActual === 'dashboard' && <Dashboard />}
         {paginaActual === 'transacciones' && <Transacciones />}
         {paginaActual === 'presupuestos' && <Presupuestos />}

@@ -10,9 +10,9 @@ const Sidebar = ({ paginaActual, setPaginaActual }) => {
   ];
 
   return (
-    <div className="w-64 bg-gray-950 min-h-screen flex flex-col">
-      <div className="p-6 border-b border-gray-800">
-        <h1 className="text-gold-400 text-2xl font-bold tracking-wide">FinanzApp</h1>
+    <div className="w-64 bg-white min-h-screen flex flex-col border-r border-lavender-200 shadow-sm">
+      <div className="p-6 border-b border-lavender-200">
+        <h1 className="text-violet-700 text-2xl font-bold tracking-wide">FinanzApp</h1>
         <p className="text-gray-400 text-sm mt-1">Hola, {nombre}</p>
       </div>
 
@@ -21,10 +21,10 @@ const Sidebar = ({ paginaActual, setPaginaActual }) => {
           <button
             key={e.id}
             onClick={() => setPaginaActual(e.id)}
-            className={`w-full text-left px-4 py-3 rounded-lg transition duration-200 text-sm ${
+            className={`w-full text-left px-4 py-3 rounded-xl transition duration-200 text-sm font-medium ${
               paginaActual === e.id
-                ? 'bg-gold-500 text-gray-950 font-semibold'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                ? 'bg-violet-600 text-white shadow-md'
+                : 'text-gray-500 hover:bg-lavender-100 hover:text-violet-700'
             }`}
           >
             {e.label}
@@ -32,10 +32,10 @@ const Sidebar = ({ paginaActual, setPaginaActual }) => {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-800">
+      <div className="p-4 border-t border-lavender-200">
         <button
           onClick={logout}
-          className="w-full px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 text-left text-sm transition duration-200"
+          className="w-full px-4 py-3 rounded-xl text-gray-400 hover:bg-lavender-100 hover:text-violet-700 text-left text-sm font-medium transition duration-200"
         >
           Cerrar sesión
         </button>
