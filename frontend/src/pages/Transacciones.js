@@ -1,14 +1,28 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 
+const CATEGORIAS_DEFAULT = [
+  'Alimentación',
+  'Transporte',
+  'Ocio',
+  'Salud',
+  'Ropa',
+  'Vivienda',
+  'Nómina',
+  'Otros'
+];
+
 const Transacciones = () => {
   const [transacciones, setTransacciones] = useState([]);
+  const [categorias, setCategorias] = useState(CATEGORIAS_DEFAULT);
   const [tipo, setTipo] = useState('gasto');
-  const [categoria, setCategoria] = useState('');
+  const [categoria, setCategoria] = useState('Alimentación');
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [filtroCategoria, setFiltroCategoria] = useState('');
+  const [nuevaCategoria, setNuevaCategoria] = useState('');
+  const [mostrarNuevaCategoria, setMostrarNuevaCategoria] = useState(false);
 
   const cargarTransacciones = async () => {
     const res = await api.get('/transacciones');
@@ -19,10 +33,19 @@ const Transacciones = () => {
     cargarTransacciones();
   }, []);
 
+  const handleAnadirCategoria = () => {
+    if (nuevaCategoria.trim() && !categorias.includes(nuevaCategoria.trim())) {
+      const actualizada = [...categorias, nuevaCategoria.trim()];
+      setCategorias(actualizada);
+      setCategoria(nuevaCategoria.trim());
+      setNuevaCategoria('');
+      setMostrarNuevaCategoria(false);
+    }
+  };
+
   const handleCrear = async (e) => {
     e.preventDefault();
     await api.post('/transacciones', { tipo, categoria, monto: parseFloat(monto), descripcion });
-    setCategoria('');
     setMonto('');
     setDescripcion('');
     cargarTransacciones();
@@ -60,14 +83,42 @@ const Transacciones = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Categoría</label>
-            <input
-              type="text"
-              value={categoria}
-              onChange={e => setCategoria(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-              placeholder="Ej: Alimentación"
-              required
-            />
+            <div className="flex gap-2">
+              <select
+                value={categoria}
+                onChange={e => setCategoria(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                {categorias.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setMostrarNuevaCategoria(!mostrarNuevaCategoria)}
+                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-600 text-sm font-medium transition"
+              >
+                + Nueva
+              </button>
+            </div>
+            {mostrarNuevaCategoria && (
+              <div className="flex gap-2 mt-2">
+                <input
+                  type="text"
+                  value={nuevaCategoria}
+                  onChange={e => setNuevaCategoria(e.target.value)}
+                  placeholder="Nombre de la categoría"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={handleAnadirCategoria}
+                  className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition"
+                >
+                  Añadir
+                </button>
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Monto (€)</label>
@@ -101,7 +152,7 @@ const Transacciones = () => {
         </form>
       </div>
 
-      {/* Filtros */}
+      {/* Filtros e historial */}
       <div className="bg-white rounded-2xl shadow p-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-4">Historial</h3>
         <div className="flex gap-4 mb-4">
@@ -126,11 +177,11 @@ const Transacciones = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 text-gray-600">
-              <th className="px-4 py-3 text-left rounded-tl-lg">Tipo</th>
+              <th className="px-4 py-3 text-left">Tipo</th>
               <th className="px-4 py-3 text-left">Categoría</th>
               <th className="px-4 py-3 text-left">Monto</th>
               <th className="px-4 py-3 text-left">Descripción</th>
-              <th className="px-4 py-3 text-left rounded-tr-lg">Acción</th>
+              <th className="px-4 py-3 text-left">Acción</th>
             </tr>
           </thead>
           <tbody>
