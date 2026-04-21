@@ -5,11 +5,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        gold: {
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
+        lavender: {
+          50: '#f5f3ff',
+          100: '#ede9fe',
+          200: '#ddd6fe',
+        },
+        violet: {
+          600: '#7c3aed',
+          700: '#6d28d9',
+          800: '#5b21b6',
         }
       }
     },

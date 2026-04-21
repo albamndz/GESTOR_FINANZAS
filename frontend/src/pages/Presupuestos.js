@@ -30,30 +30,29 @@ const Presupuestos = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Presupuestos</h2>
+      <h2 className="text-2xl font-bold text-gray-700">Presupuestos</h2>
 
-      {/* Formulario */}
-      <div className="bg-white rounded-2xl shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">Crear presupuesto</h3>
+      <div className="bg-white rounded-2xl shadow-sm border border-lavender-200 p-6">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Crear presupuesto</h3>
         <form onSubmit={handleCrear} className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Categoría</label>
+            <label className="block text-sm font-medium text-gray-500 mb-1">Categoría</label>
             <input
               type="text"
               value={categoria}
               onChange={e => setCategoria(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="Ej: Alimentación"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Límite (€)</label>
+            <label className="block text-sm font-medium text-gray-500 mb-1">Límite (€)</label>
             <input
               type="number"
               value={limite}
               onChange={e => setLimite(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="0.00"
               required
             />
@@ -61,7 +60,7 @@ const Presupuestos = () => {
           <div className="col-span-2">
             <button
               type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 rounded-xl transition duration-200"
             >
               Crear presupuesto
             </button>
@@ -69,40 +68,39 @@ const Presupuestos = () => {
         </form>
       </div>
 
-      {/* Lista de presupuestos */}
-      <div className="bg-white rounded-2xl shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">Mis presupuestos</h3>
+      <div className="bg-white rounded-2xl shadow-sm border border-lavender-200 p-6">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Mis presupuestos</h3>
         {presupuestos.length === 0 ? (
-          <p className="text-gray-400 text-center py-6">No hay presupuestos creados</p>
+          <p className="text-gray-300 text-center py-6">No hay presupuestos creados</p>
         ) : (
           <div className="space-y-4">
             {presupuestos.map(p => {
               const porcentaje = Math.min((p.gastoActual / p.limite) * 100, 100);
               return (
-                <div key={p._id} className="border border-gray-100 rounded-xl p-4">
+                <div key={p._id} className="border border-lavender-100 rounded-xl p-4">
                   <div className="flex justify-between items-center mb-2">
                     <div>
-                      <span className="font-semibold text-gray-800">{p.categoria}</span>
+                      <span className="font-semibold text-gray-700">{p.categoria}</span>
                       {p.alerta && (
-                        <span className="ml-2 text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">
-                          ⚠ Límite superado
+                        <span className="ml-2 text-xs bg-red-50 text-red-400 px-2 py-1 rounded-full font-medium">
+                          Límite superado
                         </span>
                       )}
                     </div>
                     <button
                       onClick={() => handleEliminar(p._id)}
-                      className="text-red-400 hover:text-red-600 text-xs font-medium"
+                      className="text-red-400 hover:text-red-600 text-xs font-medium transition"
                     >
                       Eliminar
                     </button>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-400 mb-2">
                     <span>Gastado: {p.gastoActual} €</span>
                     <span>Límite: {p.limite} €</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div className="w-full bg-lavender-100 rounded-full h-2">
                     <div
-                      className={`h-3 rounded-full transition-all duration-500 ${porcentaje >= 100 ? 'bg-red-500' : porcentaje >= 75 ? 'bg-yellow-400' : 'bg-emerald-500'}`}
+                      className={`h-2 rounded-full transition-all duration-500 ${porcentaje >= 100 ? 'bg-red-400' : porcentaje >= 75 ? 'bg-yellow-400' : 'bg-violet-600'}`}
                       style={{ width: `${porcentaje}%` }}
                     />
                   </div>
