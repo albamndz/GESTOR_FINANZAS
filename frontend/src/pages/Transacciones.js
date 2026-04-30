@@ -58,6 +58,24 @@ const Transacciones = () => {
     cargarTransacciones();
   };
 
+  const exportarCSV = () => {
+    const cabecera = ['Fecha', 'Tipo', 'Categoria', 'Cantidad', 'Descripcion'];
+    const filas = transacciones.map(t => [
+      new Date(t.fecha).toLocaleDateString('es-ES'),
+      t.tipo,
+      t.categoria,
+      t.monto,
+      t.descripcion || ''
+    ]);
+    const csv = [cabecera, ...filas].map(f => f.join(';')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'transacciones.csv';
+    link.click();
+  };
+
   const transaccionesFiltradas = transacciones.filter(t => {
     const coincideTipo = filtroTipo === 'todos' || t.tipo === filtroTipo;
     const coincideCategoria = filtroCategoria === '' || t.categoria.toLowerCase().includes(filtroCategoria.toLowerCase());
@@ -165,23 +183,31 @@ const Transacciones = () => {
 
       <div className="bg-white rounded-2xl shadow-sm border border-lavender-200 p-6">
         <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Historial</h3>
-        <div className="flex gap-4 mb-4">
-          <select
-            value={filtroTipo}
-            onChange={e => setFiltroTipo(e.target.value)}
-            className="bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+        <div className="flex gap-4 mb-4 justify-between items-center">
+          <div className="flex gap-4">
+            <select
+              value={filtroTipo}
+              onChange={e => setFiltroTipo(e.target.value)}
+              className="bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+            >
+              <option value="todos">Todos</option>
+              <option value="ingreso">Ingresos</option>
+              <option value="gasto">Gastos</option>
+            </select>
+            <input
+              type="text"
+              value={filtroCategoria}
+              onChange={e => setFiltroCategoria(e.target.value)}
+              placeholder="Filtrar por categoría"
+              className="bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+            />
+          </div>
+          <button
+            onClick={exportarCSV}
+            className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl transition"
           >
-            <option value="todos">Todos</option>
-            <option value="ingreso">Ingresos</option>
-            <option value="gasto">Gastos</option>
-          </select>
-          <input
-            type="text"
-            value={filtroCategoria}
-            onChange={e => setFiltroCategoria(e.target.value)}
-            placeholder="Filtrar por categoría"
-            className="bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
-          />
+            Exportar CSV
+          </button>
         </div>
 
         <table className="w-full text-sm">
