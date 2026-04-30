@@ -19,6 +19,7 @@ const Transacciones = () => {
   const [categoria, setCategoria] = useState('Alimentación');
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
   const [filtroTipo, setFiltroTipo] = useState('todos');
   const [filtroCategoria, setFiltroCategoria] = useState('');
   const [nuevaCategoria, setNuevaCategoria] = useState('');
@@ -45,9 +46,10 @@ const Transacciones = () => {
 
   const handleCrear = async (e) => {
     e.preventDefault();
-    await api.post('/transacciones', { tipo, categoria, monto: parseFloat(monto), descripcion });
+    await api.post('/transacciones', { tipo, categoria, monto: parseFloat(monto), descripcion, fecha });
     setMonto('');
     setDescripcion('');
+    setFecha(new Date().toISOString().split('T')[0]);
     cargarTransacciones();
   };
 
@@ -141,6 +143,16 @@ const Transacciones = () => {
             />
           </div>
           <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-500 mb-1">Fecha</label>
+            <input
+              type="date"
+              value={fecha}
+              onChange={e => setFecha(e.target.value)}
+              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+              required
+            />
+          </div>
+          <div className="col-span-2">
             <button
               type="submit"
               className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 rounded-xl transition duration-200"
@@ -175,6 +187,7 @@ const Transacciones = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-gray-400 border-b border-lavender-100">
+              <th className="pb-3 text-left font-medium">Fecha</th>
               <th className="pb-3 text-left font-medium">Tipo</th>
               <th className="pb-3 text-left font-medium">Categoría</th>
               <th className="pb-3 text-left font-medium">Cantidad</th>
@@ -185,11 +198,12 @@ const Transacciones = () => {
           <tbody>
             {transaccionesFiltradas.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-300">No hay transacciones</td>
+                <td colSpan="6" className="text-center py-6 text-gray-300">No hay transacciones</td>
               </tr>
             ) : (
               transaccionesFiltradas.map(t => (
                 <tr key={t._id} className="border-b border-lavender-100 hover:bg-lavender-50 transition">
+                  <td className="py-3 text-gray-400">{new Date(t.fecha).toLocaleDateString('es-ES')}</td>
                   <td className="py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${t.tipo === 'ingreso' ? 'bg-violet-100 text-violet-700' : 'bg-red-50 text-red-400'}`}>
                       {t.tipo}
