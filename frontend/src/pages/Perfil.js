@@ -17,7 +17,7 @@ const Perfil = () => {
     e.preventDefault();
     try {
       const res = await api.put('/usuarios/perfil', { nombre: nuevoNombre });
-      login(localStorage.getItem('token'), res.data.nombre);
+      login(localStorage.getItem('token'), res.data.nombre, localStorage.getItem('rol'));
       setMensajeNombre('Nombre actualizado correctamente');
       setErrorNombre('');
     } catch (err) {
@@ -46,22 +46,21 @@ const Perfil = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <h2 className="text-2xl font-bold text-gray-700">Perfil</h2>
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">Perfil</h2>
 
-      {/* Actualizar nombre */}
-      <div className="bg-white rounded-2xl shadow-sm border border-lavender-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-lavender-200 dark:border-gray-700 p-6">
         <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Datos personales</h3>
         {errorNombre && <p className="bg-red-50 text-red-400 p-3 rounded-xl mb-4 text-sm">{errorNombre}</p>}
-        {mensajeNombre && <p className="bg-violet-50 text-violet-600 p-3 rounded-xl mb-4 text-sm">{mensajeNombre}</p>}
+        {mensajeNombre && <p className="bg-violet-50 dark:bg-violet-900 text-violet-600 dark:text-violet-300 p-3 rounded-xl mb-4 text-sm">{mensajeNombre}</p>}
         <form onSubmit={handleActualizarNombre} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Nombre</label>
+            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nombre</label>
             <input
               type="text"
               value={nuevoNombre}
               onChange={e => setNuevoNombre(e.target.value)}
-              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+              className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600"
               required
             />
           </div>
@@ -74,41 +73,40 @@ const Perfil = () => {
         </form>
       </div>
 
-      {/* Cambiar contraseña */}
-      <div className="bg-white rounded-2xl shadow-sm border border-lavender-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-lavender-200 dark:border-gray-700 p-6">
         <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Cambiar contraseña</h3>
         {errorContraseña && <p className="bg-red-50 text-red-400 p-3 rounded-xl mb-4 text-sm">{errorContraseña}</p>}
-        {mensajeContraseña && <p className="bg-violet-50 text-violet-600 p-3 rounded-xl mb-4 text-sm">{mensajeContraseña}</p>}
+        {mensajeContraseña && <p className="bg-violet-50 dark:bg-violet-900 text-violet-600 dark:text-violet-300 p-3 rounded-xl mb-4 text-sm">{mensajeContraseña}</p>}
         <form onSubmit={handleCambiarContraseña} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Contraseña actual</label>
+            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Contraseña actual</label>
             <input
               type="password"
               value={contraseñaActual}
               onChange={e => setContraseñaActual(e.target.value)}
-              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+              className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="••••••••"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Nueva contraseña</label>
+            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nueva contraseña</label>
             <input
               type="password"
               value={nuevaContraseña}
               onChange={e => setNuevaContraseña(e.target.value)}
-              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+              className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="••••••••"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Confirmar nueva contraseña</label>
+            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Confirmar nueva contraseña</label>
             <input
               type="password"
               value={confirmarContraseña}
               onChange={e => setConfirmarContraseña(e.target.value)}
-              className="w-full bg-lavender-50 border border-lavender-200 rounded-xl px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-600"
+              className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="••••••••"
               required
             />

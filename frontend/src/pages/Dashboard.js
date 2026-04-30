@@ -17,6 +17,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 
 const Dashboard = () => {
   const [transacciones, setTransacciones] = useState([]);
+  const [modoOscuro, setModoOscuro] = useState(document.documentElement.classList.contains('dark'));
 
   useEffect(() => {
     const cargar = async () => {
@@ -24,6 +25,12 @@ const Dashboard = () => {
       setTransacciones(res.data);
     };
     cargar();
+
+    const observer = new MutationObserver(() => {
+      setModoOscuro(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true });
+    return () => observer.disconnect();
   }, []);
 
   const ingresos = transacciones.filter(t => t.tipo === 'ingreso').reduce((acc, t) => acc + t.monto, 0);
@@ -44,10 +51,14 @@ const Dashboard = () => {
     }]
   };
 
+  const gridColor = modoOscuro ? '#374151' : '#ede9fe';
+  const tickColor = modoOscuro ? '#9ca3af' : '#9ca3af';
+  const legendColor = modoOscuro ? '#d1d5db' : '#6b7280';
+
   const pieOptions = {
     maintainAspectRatio: false,
     plugins: {
-      legend: { labels: { color: '#6b7280' } }
+      legend: { labels: { color: legendColor } }
     }
   };
 
@@ -67,37 +78,37 @@ const Dashboard = () => {
   const lineOptions = {
     maintainAspectRatio: false,
     plugins: {
-      legend: { labels: { color: '#6b7280' } }
+      legend: { labels: { color: legendColor } }
     },
     scales: {
-      x: { ticks: { color: '#9ca3af' }, grid: { color: '#ede9fe' } },
-      y: { ticks: { color: '#9ca3af' }, grid: { color: '#ede9fe' } }
+      x: { ticks: { color: tickColor }, grid: { color: gridColor } },
+      y: { ticks: { color: tickColor }, grid: { color: gridColor } }
     }
   };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-700">Dashboard</h2>
+      <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200">Dashboard</h2>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl border border-lavender-200 shadow-sm p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-lavender-200 dark:border-gray-700 shadow-sm p-6">
           <p className="text-sm text-gray-400 mb-1">Ingresos totales</p>
-          <p className="text-3xl font-bold text-violet-600">{ingresos.toFixed(2)} €</p>
+          <p className="text-3xl font-bold text-violet-600 dark:text-violet-400">{ingresos.toFixed(2)} €</p>
         </div>
-        <div className="bg-white rounded-2xl border border-lavender-200 shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-lavender-200 dark:border-gray-700 shadow-sm p-6">
           <p className="text-sm text-gray-400 mb-1">Gastos totales</p>
           <p className="text-3xl font-bold text-red-400">{gastos.toFixed(2)} €</p>
         </div>
-        <div className="bg-white rounded-2xl border border-lavender-200 shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-lavender-200 dark:border-gray-700 shadow-sm p-6">
           <p className="text-sm text-gray-400 mb-1">Balance</p>
-          <p className={`text-3xl font-bold ${balance >= 0 ? 'text-violet-600' : 'text-red-400'}`}>
+          <p className={`text-3xl font-bold ${balance >= 0 ? 'text-violet-600 dark:text-violet-400' : 'text-red-400'}`}>
             {balance.toFixed(2)} €
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl border border-lavender-200 shadow-sm p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-lavender-200 dark:border-gray-700 shadow-sm p-6">
           <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Gastos por categoría</h3>
           {Object.keys(categorias).length === 0 ? (
             <p className="text-gray-300 text-center py-10">Sin datos aún</p>
@@ -107,7 +118,7 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-        <div className="bg-white rounded-2xl border border-lavender-200 shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-lavender-200 dark:border-gray-700 shadow-sm p-6">
           <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Evolución reciente</h3>
           {transacciones.length === 0 ? (
             <p className="text-gray-300 text-center py-10">Sin datos aún</p>
@@ -119,35 +130,37 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-lavender-200 shadow-sm p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-lavender-200 dark:border-gray-700 shadow-sm p-6">
         <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Últimas transacciones</h3>
         {transacciones.length === 0 ? (
           <p className="text-gray-300 text-center py-6">No hay transacciones aún</p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-gray-400 border-b border-lavender-100">
-                <th className="pb-3 text-left font-medium">Tipo</th>
-                <th className="pb-3 text-left font-medium">Categoría</th>
-                <th className="pb-3 text-left font-medium">Cantidad</th>
-                <th className="pb-3 text-left font-medium">Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...transacciones].reverse().slice(0, 5).map(t => (
-                <tr key={t._id} className="border-b border-lavender-100 hover:bg-lavender-50 transition">
-                  <td className="py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${t.tipo === 'ingreso' ? 'bg-violet-100 text-violet-700' : 'bg-red-50 text-red-400'}`}>
-                      {t.tipo}
-                    </span>
-                  </td>
-                  <td className="py-3 text-gray-600">{t.categoria}</td>
-                  <td className="py-3 font-semibold text-gray-700">{t.monto} €</td>
-                  <td className="py-3 text-gray-400">{t.descripcion || '—'}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-400 border-b border-lavender-100 dark:border-gray-700">
+                  <th className="pb-3 text-left font-medium">Tipo</th>
+                  <th className="pb-3 text-left font-medium">Categoría</th>
+                  <th className="pb-3 text-left font-medium">Cantidad</th>
+                  <th className="pb-3 text-left font-medium">Descripción</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {[...transacciones].reverse().slice(0, 5).map(t => (
+                  <tr key={t._id} className="border-b border-lavender-100 dark:border-gray-700 hover:bg-lavender-50 dark:hover:bg-gray-700 transition">
+                    <td className="py-3">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${t.tipo === 'ingreso' ? 'bg-violet-100 text-violet-700' : 'bg-red-50 text-red-400'}`}>
+                        {t.tipo}
+                      </span>
+                    </td>
+                    <td className="py-3 text-gray-600 dark:text-gray-300">{t.categoria}</td>
+                    <td className="py-3 font-semibold text-gray-700 dark:text-gray-200">{t.monto} €</td>
+                    <td className="py-3 text-gray-400">{t.descripcion || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
