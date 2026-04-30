@@ -5,6 +5,7 @@ import Registro from './pages/Registro';
 import Dashboard from './pages/Dashboard';
 import Transacciones from './pages/Transacciones';
 import Presupuestos from './pages/Presupuestos';
+import Resumen from './pages/Resumen';
 import Sidebar from './components/Sidebar';
 
 const AppContent = () => {
@@ -24,6 +25,7 @@ const AppContent = () => {
         {paginaActual === 'dashboard' && <Dashboard />}
         {paginaActual === 'transacciones' && <Transacciones />}
         {paginaActual === 'presupuestos' && <Presupuestos />}
+        {paginaActual === 'resumen' && <Resumen />}
       </div>
     </div>
   );

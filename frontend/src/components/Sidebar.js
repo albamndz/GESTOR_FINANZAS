@@ -7,6 +7,7 @@ const Sidebar = ({ paginaActual, setPaginaActual }) => {
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'transacciones', label: 'Transacciones' },
     { id: 'presupuestos', label: 'Presupuestos' },
+    { id: 'resumen', label: 'Resumen mensual' },
   ];
 
   return (
