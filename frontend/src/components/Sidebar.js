@@ -4,6 +4,7 @@ const Sidebar = ({ paginaActual, setPaginaActual }) => {
   const { nombre, logout } = useAuth();
 
   const enlaces = [
+    { id: 'perfil', label: 'Perfil' },
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'transacciones', label: 'Transacciones' },
     { id: 'presupuestos', label: 'Presupuestos' },

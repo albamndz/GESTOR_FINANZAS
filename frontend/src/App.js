@@ -7,6 +7,7 @@ import Transacciones from './pages/Transacciones';
 import Presupuestos from './pages/Presupuestos';
 import Resumen from './pages/Resumen';
 import Sidebar from './components/Sidebar';
+import Perfil from './pages/Perfil';
 
 const AppContent = () => {
   const { token } = useAuth();
@@ -22,6 +23,7 @@ const AppContent = () => {
     <div className="flex min-h-screen bg-lavender-50">
       <Sidebar paginaActual={paginaActual} setPaginaActual={setPaginaActual} />
       <div className="flex-1 p-8 overflow-auto">
+        {paginaActual === 'perfil' && <Perfil />}
         {paginaActual === 'dashboard' && <Dashboard />}
         {paginaActual === 'transacciones' && <Transacciones />}
         {paginaActual === 'presupuestos' && <Presupuestos />}
