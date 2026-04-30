@@ -6,11 +6,12 @@ import Dashboard from './pages/Dashboard';
 import Transacciones from './pages/Transacciones';
 import Presupuestos from './pages/Presupuestos';
 import Resumen from './pages/Resumen';
-import Sidebar from './components/Sidebar';
 import Perfil from './pages/Perfil';
+import Admin from './pages/Admin';
+import Sidebar from './components/Sidebar';
 
 const AppContent = () => {
-  const { token } = useAuth();
+  const { token, rol } = useAuth();
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
   const [paginaActual, setPaginaActual] = useState('dashboard');
 
@@ -21,13 +22,14 @@ const AppContent = () => {
 
   return (
     <div className="flex min-h-screen bg-lavender-50">
-      <Sidebar paginaActual={paginaActual} setPaginaActual={setPaginaActual} />
+      <Sidebar paginaActual={paginaActual} setPaginaActual={setPaginaActual} rol={rol} />
       <div className="flex-1 p-8 overflow-auto">
-        {paginaActual === 'perfil' && <Perfil />}
         {paginaActual === 'dashboard' && <Dashboard />}
         {paginaActual === 'transacciones' && <Transacciones />}
         {paginaActual === 'presupuestos' && <Presupuestos />}
         {paginaActual === 'resumen' && <Resumen />}
+        {paginaActual === 'perfil' && <Perfil />}
+        {paginaActual === 'admin' && rol === 'admin' && <Admin />}
       </div>
     </div>
   );

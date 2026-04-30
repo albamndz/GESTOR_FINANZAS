@@ -12,7 +12,7 @@ const Login = ({ onSwitch }) => {
     e.preventDefault();
     try {
       const res = await api.post('/usuarios/login', { correo, contraseña });
-      login(res.data.token, res.data.nombre);
+      login(res.data.token, res.data.nombre, res.data.rol);
     } catch (err) {
       setError('Correo o contraseña incorrectos');
     }

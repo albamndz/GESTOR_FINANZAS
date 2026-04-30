@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 
-const Sidebar = ({ paginaActual, setPaginaActual }) => {
+const Sidebar = ({ paginaActual, setPaginaActual, rol }) => {
   const { nombre, logout } = useAuth();
 
   const enlaces = [
@@ -11,11 +11,20 @@ const Sidebar = ({ paginaActual, setPaginaActual }) => {
     { id: 'resumen', label: 'Resumen mensual' },
   ];
 
+  if (rol === 'admin') {
+    enlaces.splice(1, 0, { id: 'admin', label: 'Administración' });
+  }
+
   return (
     <div className="w-64 bg-white min-h-screen flex flex-col border-r border-lavender-200 shadow-sm">
       <div className="p-6 border-b border-lavender-200">
         <h1 className="text-violet-700 text-2xl font-bold tracking-wide">FinanzApp</h1>
         <p className="text-gray-400 text-sm mt-1">Hola, {nombre}</p>
+        {rol === 'admin' && (
+          <span className="text-xs bg-violet-100 text-violet-700 px-2 py-1 rounded-full font-medium mt-1 inline-block">
+            Administrador
+          </span>
+        )}
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
