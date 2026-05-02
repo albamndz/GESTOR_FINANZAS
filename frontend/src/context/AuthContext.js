@@ -3,9 +3,9 @@ import { createContext, useState, useContext, useEffect } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [nombre, setNombre] = useState(localStorage.getItem('nombre'));
-  const [rol, setRol] = useState(localStorage.getItem('rol'));
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
+  const [nombre, setNombre] = useState(sessionStorage.getItem('nombre'));
+  const [rol, setRol] = useState(sessionStorage.getItem('rol'));
   const [modoOscuro, setModoOscuro] = useState(localStorage.getItem('modoOscuro') === 'true');
 
   useEffect(() => {
@@ -23,18 +23,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (token, nombre, rol) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('nombre', nombre);
-    localStorage.setItem('rol', rol);
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('nombre', nombre);
+    sessionStorage.setItem('rol', rol);
     setToken(token);
     setNombre(nombre);
     setRol(rol);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('nombre');
-    localStorage.removeItem('rol');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('nombre');
+    sessionStorage.removeItem('rol');
     setToken(null);
     setNombre(null);
     setRol(null);
