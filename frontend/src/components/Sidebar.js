@@ -27,7 +27,7 @@ const Sidebar = ({ paginaActual, setPaginaActual, rol }) => {
         )}
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {enlaces.map(e => (
           <button
             key={e.id}
@@ -41,22 +41,23 @@ const Sidebar = ({ paginaActual, setPaginaActual, rol }) => {
             {e.label}
           </button>
         ))}
-      </nav>
 
-      <div className="p-4 border-t border-lavender-200 dark:border-gray-700 space-y-1">
-        <button
-          onClick={toggleModoOscuro}
-          className="w-full px-4 py-3 rounded-xl text-gray-400 dark:text-gray-300 hover:bg-lavender-100 dark:hover:bg-gray-800 text-left text-sm font-medium transition duration-200"
-        >
-          {modoOscuro ? 'Modo claro' : 'Modo oscuro'}
-        </button>
-        <button
-          onClick={logout}
-          className="w-full px-4 py-3 rounded-xl text-gray-400 dark:text-gray-300 hover:bg-lavender-100 dark:hover:bg-gray-800 text-left text-sm font-medium transition duration-200"
-        >
-          Cerrar sesión
-        </button>
-      </div>
+        {/* En móvil mostramos estas opciones dentro del nav */}
+        <div className="pt-4 border-t border-lavender-200 dark:border-gray-700 mt-4 space-y-1">
+          <button
+            onClick={toggleModoOscuro}
+            className="w-full px-4 py-3 rounded-xl text-gray-400 dark:text-gray-300 hover:bg-lavender-100 dark:hover:bg-gray-800 text-left text-sm font-medium transition duration-200"
+          >
+            {modoOscuro ? 'Modo claro' : 'Modo oscuro'}
+          </button>
+          <button
+            onClick={logout}
+            className="w-full px-4 py-3 rounded-xl text-red-400 hover:bg-red-50 dark:hover:bg-red-900 text-left text-sm font-medium transition duration-200"
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </nav>
     </div>
   );
 };
