@@ -61,40 +61,42 @@ const Presupuestos = () => {
         <form onSubmit={handleCrear} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Categoría</label>
-            <div className="flex gap-2">
-              <select
-                value={categoria}
-                onChange={e => setCategoria(e.target.value)}
-                className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600"
-              >
-                {categorias.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={() => setMostrarNuevaCategoria(!mostrarNuevaCategoria)}
-                className="px-3 py-2 bg-lavender-100 dark:bg-gray-700 hover:bg-lavender-200 dark:hover:bg-gray-600 rounded-xl text-violet-700 dark:text-violet-400 text-sm font-medium transition"
-              >
-                + Nueva
-              </button>
-            </div>
-            {mostrarNuevaCategoria && (
-              <div className="flex gap-2 mt-2">
-                <input
-                  type="text"
-                  value={nuevaCategoria}
-                  onChange={e => setNuevaCategoria(e.target.value)}
-                  placeholder="Nombre de la categoría"
-                  className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600 text-sm"
-                />
+            <select
+              value={categoria}
+              onChange={e => { setCategoria(e.target.value); setMostrarNuevaCategoria(false); }}
+              className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600"
+            >
+              {categorias.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            {categoria === 'Otros' && (
+              <div className="mt-2">
                 <button
                   type="button"
-                  onClick={handleAnadirCategoria}
-                  className="px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-sm font-medium transition"
+                  onClick={() => setMostrarNuevaCategoria(!mostrarNuevaCategoria)}
+                  className="px-3 py-2 bg-lavender-100 dark:bg-gray-700 hover:bg-lavender-200 dark:hover:bg-gray-600 rounded-xl text-violet-700 dark:text-violet-400 text-sm font-medium transition"
                 >
-                  Añadir
+                  + Nueva categoría
                 </button>
+                {mostrarNuevaCategoria && (
+                  <div className="flex gap-2 mt-2">
+                    <input
+                      type="text"
+                      value={nuevaCategoria}
+                      onChange={e => setNuevaCategoria(e.target.value)}
+                      placeholder="Nombre de la categoría"
+                      className="w-full bg-lavender-50 dark:bg-gray-700 border border-lavender-200 dark:border-gray-600 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAnadirCategoria}
+                      className="px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-sm font-medium transition"
+                    >
+                      Añadir
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
