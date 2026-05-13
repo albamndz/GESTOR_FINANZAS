@@ -94,9 +94,9 @@ Contiene todas las variables necesarias para ejecutar la aplicación:
 
 ## Credenciales de prueba
 
-Para acceder como administrador usar las siguientes credenciales:
-- **Correo:** alba@admin.com
-- **Contraseña:** (contactar con la autora)
+Para probar la aplicación puedes registrarte con cualquier correo y contraseña desde la pantalla de registro.
+
+Para acceder como administrador contactar con la autora.
 
 ---
 
