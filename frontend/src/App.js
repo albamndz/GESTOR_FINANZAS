@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
@@ -17,6 +17,12 @@ const AppContent = () => {
   const [paginaActual, setPaginaActual] = useState('dashboard');
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
+  useEffect(() => {
+    if (token) {
+      setPaginaActual('dashboard');
+    }
+  }, [token]);
+
   if (!token) {
     if (mostrarRegistro) return <Registro onSwitch={() => setMostrarRegistro(false)} />;
     return <Login onSwitch={() => setMostrarRegistro(true)} />;
@@ -26,7 +32,6 @@ const AppContent = () => {
     <div className="flex min-h-screen bg-lavender-50 dark:bg-gray-950">
       <Notificaciones />
 
-      {/* Overlay móvil */}
       {sidebarAbierto && (
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-20 lg:hidden"
@@ -34,7 +39,6 @@ const AppContent = () => {
         />
       )}
 
-      {/* Sidebar */}
       <div className={`fixed lg:static z-30 transition-transform duration-300 ${sidebarAbierto ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <Sidebar
           paginaActual={paginaActual}
@@ -43,9 +47,7 @@ const AppContent = () => {
         />
       </div>
 
-      {/* Contenido */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header móvil */}
         <div className="lg:hidden flex items-center gap-4 p-4 bg-white dark:bg-gray-900 border-b border-lavender-200 dark:border-gray-700">
           <button
             onClick={() => setSidebarAbierto(true)}

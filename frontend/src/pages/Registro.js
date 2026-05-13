@@ -27,7 +27,7 @@ const Registro = ({ onSwitch }) => {
         <p className="text-gray-400 text-sm text-center mb-6">Crea tu cuenta</p>
         {error && <p className="bg-red-50 text-red-500 p-3 rounded-xl mb-4 text-sm">{error}</p>}
         {mensaje && <p className="bg-green-50 text-green-600 p-3 rounded-xl mb-4 text-sm">{mensaje}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">Nombre</label>
             <input
@@ -36,6 +36,7 @@ const Registro = ({ onSwitch }) => {
               onChange={e => setNombre(e.target.value)}
               className="w-full bg-lavender-50 border border-lavender-200 text-gray-800 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="Tu nombre"
+              autoComplete="off"
               required
             />
           </div>
@@ -47,6 +48,7 @@ const Registro = ({ onSwitch }) => {
               onChange={e => setCorreo(e.target.value)}
               className="w-full bg-lavender-50 border border-lavender-200 text-gray-800 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="alba@ejemplo.com"
+              autoComplete="off"
               required
             />
           </div>
@@ -58,6 +60,7 @@ const Registro = ({ onSwitch }) => {
               onChange={e => setContraseña(e.target.value)}
               className="w-full bg-lavender-50 border border-lavender-200 text-gray-800 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
               placeholder="••••••••"
+              autoComplete="new-password"
               required
             />
           </div>
